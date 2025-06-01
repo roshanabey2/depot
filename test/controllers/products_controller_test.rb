@@ -14,6 +14,11 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
   test "should get new" do
     get new_product_url
     assert_response :success
+    assert_select "form" do 
+      assert_select "label", 4
+      assert_select "input[type=submit]"
+    end
+    assert_select "a", "Back to products"
   end
 
   test "should create product" do
@@ -22,6 +27,10 @@ class ProductsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to product_url(Product.last)
+    follow_redirect!
+    assert_select "##{dom_id(Product.last)}" do
+      assert_select "div", "Title: #{@title}"
+    end
   end
 
   test "should show product" do
