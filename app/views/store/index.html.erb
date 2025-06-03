@@ -30,11 +30,15 @@
             class: 'object-contain w-40 h-48 shadow mr-6') %>
           
           <div>
-            <h2 class="font-bold text-lg mb-3"><%= product.title %></h2>
-          
+              <div id="title">
+                <h2 class="font-bold text-lg mb-3"><%= product.title %></h2>
+                <div>
+                  
+          <div id="description">
             <p>
               <%= sanitize(product.description) %>
             </p>
+            </div>
           
             <div class="mt-3">
               <%= number_to_currency(product.price, unit: "£") %>
