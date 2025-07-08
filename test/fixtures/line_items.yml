@@ -7,3 +7,7 @@ one:
 two:
   product: two
   cart: two
+
+ruby:
+  product: ruby
+  cart: one

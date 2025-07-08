@@ -3,6 +3,7 @@ require "test_helper"
 class LineItemsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @line_item = line_items(:one)
+    @cart = carts(:one)
   end
 
   test "should get index" do
@@ -15,13 +16,17 @@ class LineItemsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should create line_item" do
-    assert_difference("LineItem.count") do
-      post line_items_url, params: { product_id: products(:ruby).id }
+  test "should create unique line_item" do
+    assert_difference("LineItem.count", 1) do
+      post line_items_url, params: { product_id: products(:rails).id }
     end
-   
+
+    @cart.reload
+
+    assert_equal 3, @cart.line_items.count
+
     follow_redirect!
-    assert_select "h2", "Your Pragmatic Cart"
+    assert_select "h2", "Your Cart"
     assert_select "li", "1 \u00D7 Programming Ruby 1.9"
   end
 

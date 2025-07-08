@@ -37,7 +37,6 @@ class LineItemsController < ApplicationController
 
       session[:counter] = 0
     end
-
   end
 
   # PATCH/PUT /line_items/1 or /line_items/1.json
