@@ -3,7 +3,6 @@ require "test_helper"
 class LineItemsControllerTest < ActionDispatch::IntegrationTest
   setup do
     @line_item = line_items(:one)
-    @cart = carts(:one)
   end
 
   test "should get index" do
@@ -16,24 +15,43 @@ class LineItemsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "should create unique line_item" do
-    assert_difference("LineItem.count", 1) do
-      post line_items_url, params: { product_id: products(:rails).id }
+  test "should create new line_item" do
+    assert_difference("LineItem.count") do
+      post line_items_url,
+        params: { product_id: products(:ruby).id }
     end
 
-    @cart.reload
-
-    assert_equal 3, @cart.line_items.count
-
-    follow_redirect!
-    assert_select "h2", "Your Cart"
-    assert_select "li", "1 \u00D7 Programming Ruby 1.9"
+  cart = Cart.last
+  assert_equal 1, cart.line_items.count
   end
 
   test "should show line_item" do
     get line_item_url(@line_item)
     assert_response :success
   end
+
+test "should create multiple line_items in a single cart" do
+  assert_difference("LineItem.count", 2) do
+    post line_items_url, params: { product_id: products(:ruby).id }
+    post line_items_url, params: { product_id: products(:two).id }
+  end
+
+  cart = Cart.last
+  assert_equal 2, cart.line_items.count
+end
+
+  test "should show dupliciate line items in a single cart as an increment in quantity" do
+    assert_difference("LineItem.count", 1) do
+      post line_items_url, params: { product_id: products(:ruby).id }
+      post line_items_url, params: { product_id: products(:ruby).id }
+    end
+
+    cart = Cart.last
+    assert_equal 1, cart.line_items.count
+    assert_equal 2, cart.line_items.first.quantity
+  end
+
+
 
   test "should get edit" do
     get edit_line_item_url(@line_item)
